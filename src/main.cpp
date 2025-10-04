@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 int main(int argc, char** argv) {
-    //test2
+    //test12
     std::cout << "FractalHorizon3DEngine starting..." << std::endl;
 
     Engine engine;
