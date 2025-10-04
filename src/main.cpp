@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Engine.h"
 #include <GLFW/glfw3.h>
-
+#include <glm/glm.hpp>
 int main(int argc, char** argv) {
     std::cout << "FractalHorizon3DEngine starting..." << std::endl;
 
@@ -14,6 +14,6 @@ int main(int argc, char** argv) {
     engine.run();
     engine.shutdown();
 
-    std::cout << "FractalHorizon3DEngine exiting." << std::endl;
+    std::cout << "FractalHorizon3DEngine exiting and close." << std::endl;
     return 0;
 }

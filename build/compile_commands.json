@@ -1,13 +1,13 @@
 [
 {
   "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
-  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/Engine.cpp",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/Engine.cpp",
   "file": "/home/mainmasgoose/projects/FractalHorizon/src/Engine.cpp",
   "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o"
 },
 {
   "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
-  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/main.cpp",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/main.cpp",
   "file": "/home/mainmasgoose/projects/FractalHorizon/src/main.cpp",
   "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o"
 },
@@ -166,5 +166,11 @@
   "command": "/usr/bin/gcc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/src -I/home/mainmasgoose/projects/FractalHorizon/build/external/GLFW/src -g -std=c99 -fPIC -Wall -o external/GLFW/src/CMakeFiles/glfw.dir/posix_poll.c.o -c /home/mainmasgoose/projects/FractalHorizon/external/GLFW/src/posix_poll.c",
   "file": "/home/mainmasgoose/projects/FractalHorizon/external/GLFW/src/posix_poll.c",
   "output": "external/GLFW/src/CMakeFiles/glfw.dir/posix_poll.c.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o external/glm/glm/CMakeFiles/glm.dir/detail/glm.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/external/glm/glm/detail/glm.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/external/glm/glm/detail/glm.cpp",
+  "output": "external/glm/glm/CMakeFiles/glm.dir/detail/glm.cpp.o"
 }
 ]

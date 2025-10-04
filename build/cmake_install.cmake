@@ -45,6 +45,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/mainmasgoose/projects/FractalHorizon/build/external/GLFW/cmake_install.cmake")
+  include("/home/mainmasgoose/projects/FractalHorizon/build/external/glm/cmake_install.cmake")
 
 endif()
 
