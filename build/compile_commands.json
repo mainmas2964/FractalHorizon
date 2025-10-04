@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -I/home/mainmasgoose/projects/FractalHorizon/src -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/Engine.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/Engine.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -I/home/mainmasgoose/projects/FractalHorizon/src -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/main.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/main.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o"
+}
+]

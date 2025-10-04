@@ -1,0 +1,18 @@
+#include <iostream>
+#include "Engine.h"
+
+int main(int argc, char** argv) {
+    std::cout << "FractalHorizon3DEngine starting..." << std::endl;
+
+    Engine engine;
+    if (!engine.init()) {
+        std::cerr << "Failed to initialize engine" << std::endl;
+        return 1;
+    }
+
+    engine.run();
+    engine.shutdown();
+
+    std::cout << "FractalHorizon3DEngine exiting." << std::endl;
+    return 0;
+}

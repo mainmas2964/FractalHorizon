@@ -1,0 +1,3 @@
+/home/mainmasgoose/projects/FractalHorizon/build/CMakeFiles/FractalHorizon3DEngine.dir
+/home/mainmasgoose/projects/FractalHorizon/build/CMakeFiles/edit_cache.dir
+/home/mainmasgoose/projects/FractalHorizon/build/CMakeFiles/rebuild_cache.dir
