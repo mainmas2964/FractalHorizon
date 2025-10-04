@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Engine.h"
+#include <GLFW/glfw3.h>
 
 int main(int argc, char** argv) {
     std::cout << "FractalHorizon3DEngine starting..." << std::endl;
