@@ -50,9 +50,9 @@ T& Component<T>::getComponent(Entity e) {
     }
     return comp[index];
 }
-// Explicit template instantiation for common component types
+// explicit template instantiation for common component types
 template class Component<int>;
 template class Component<float>;
 template class Component<double>;
 template class Component<std::string>;
-// Add more types as needed
+// add more types as needed

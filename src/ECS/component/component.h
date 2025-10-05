@@ -17,10 +17,10 @@ public:
     Component(size_t maxEntities){
         sparse.resize(maxEntities,0xFFFFFFFF); // initialize sparse array with invalid indices (0xFFFFFFFF)
     };
-    void addComponent(Entity e, const T& component); // add component to entity
-    void removeComponent(Entity e); // remove component from entity
-    bool hasComponent(Entity e); // check if entity has component
-    T& getComponent(Entity e); // get component of entity
-    size_t size() const { return comp.size(); } // get number of components
+    void addComponent(Entity e, const T& component);
+    void removeComponent(Entity e);
+    bool hasComponent(Entity e);
+    T& getComponent(Entity e);
+    size_t size() const { return comp.size(); }
 };
 #endif
