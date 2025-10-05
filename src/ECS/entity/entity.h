@@ -5,8 +5,10 @@ created by mainmas2964  2025, 4 octomber
 */
 #ifndef ENTITY_H
 #define ENTITY_H
-struct entity
+#include <cstdint>
+struct Entity
 {
-    int id;
+    uint32_t id;
 };
+//basic entity structure
 #endif
