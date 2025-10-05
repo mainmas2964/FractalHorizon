@@ -7,9 +7,8 @@
 template<typename T>
 template<typename Func>
 void System<T>::update(Func&& func, int8_t iteration_step) {
-    for (size_t i = 0; i < component.size(); i += iteration_step
-    ) {
-        func(component.comp[i]);
+    for (size_t i = 0; i < component.size(); i += iteration_step) {
+        func(component.comp[i], i);
     }
 }
 template<typename T>

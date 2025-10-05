@@ -3,8 +3,10 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include "start/test.cpp"
 int main(int argc, char** argv) {
     //test12
+
     std::cout << "FractalHorizon3DEngine starting..." << std::endl;
 
     Engine engine;
@@ -17,5 +19,6 @@ int main(int argc, char** argv) {
     engine.shutdown();
 
     std::cout << "FractalHorizon3DEngine exiting and close." << std::endl;
+    execute1(); // run ECS test
     return 0;
 }
