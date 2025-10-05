@@ -10,10 +10,12 @@ public:
     
     bool init(); // initialize engine subsystems. Return true on success
     bool initECS(); // initialize ECS (placeholder)
+    //TODO: do realization to this method in Engine.cpp
 
 
     void run(); // run the main loop (placeholder)
     void update(); // update ECS and other subsystems (placeholder)
+    //TODO: do realization to this method in Engine.cpp
 
 
 
