@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "stdexcept": "cpp",
+        "random": "cpp",
+        "limits": "cpp",
+        "ranges": "cpp",
+        "tuple": "cpp"
     }
 }
