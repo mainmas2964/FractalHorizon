@@ -49,6 +49,22 @@ cmake_ninja_workdir = /home/mainmasgoose/projects/FractalHorizon/build/
 
 build cmake_object_order_depends_target_FractalHorizon3DEngine: phony || cmake_object_order_depends_target_glfw cmake_object_order_depends_target_glm
 
+build CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/component/component.cpp.o: CXX_COMPILER__FractalHorizon3DEngine_unscanned_Debug /home/mainmasgoose/projects/FractalHorizon/src/ECS/component/component.cpp || cmake_object_order_depends_target_FractalHorizon3DEngine
+  DEFINES = -DPLATFORM_LINUX
+  DEP_FILE = CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/component/component.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm
+  OBJECT_DIR = CMakeFiles/FractalHorizon3DEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/component
+
+build CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/system/system.cpp.o: CXX_COMPILER__FractalHorizon3DEngine_unscanned_Debug /home/mainmasgoose/projects/FractalHorizon/src/ECS/system/system.cpp || cmake_object_order_depends_target_FractalHorizon3DEngine
+  DEFINES = -DPLATFORM_LINUX
+  DEP_FILE = CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/system/system.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm
+  OBJECT_DIR = CMakeFiles/FractalHorizon3DEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/system
+
 build CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o: CXX_COMPILER__FractalHorizon3DEngine_unscanned_Debug /home/mainmasgoose/projects/FractalHorizon/src/Engine.cpp || cmake_object_order_depends_target_FractalHorizon3DEngine
   DEFINES = -DPLATFORM_LINUX
   DEP_FILE = CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o.d
@@ -81,7 +97,7 @@ build CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o: CXX_COMPILER__Fracta
 #############################################
 # Link the executable FractalHorizon3DEngine
 
-build FractalHorizon3DEngine: CXX_EXECUTABLE_LINKER__FractalHorizon3DEngine_Debug CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/glad.c.o CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o | external/GLFW/src/libglfw3.a external/glm/glm/libglm.a /usr/lib64/librt.a /usr/lib64/libm.so || external/GLFW/src/libglfw3.a external/glm/glm/libglm.a
+build FractalHorizon3DEngine: CXX_EXECUTABLE_LINKER__FractalHorizon3DEngine_Debug CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/component/component.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/system/system.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/glad.c.o CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o | external/GLFW/src/libglfw3.a external/glm/glm/libglm.a /usr/lib64/librt.a /usr/lib64/libm.so || external/GLFW/src/libglfw3.a external/glm/glm/libglm.a
   DEP_FILE = CMakeFiles/FractalHorizon3DEngine.dir/link.d
   FLAGS = -g
   LINK_FLAGS = -Wl,--dependency-file=CMakeFiles/FractalHorizon3DEngine.dir/link.d
