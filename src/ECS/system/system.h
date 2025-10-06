@@ -13,9 +13,9 @@ created by mainmas2964  2025, 4 octomber
 #include "ECS/entity/entity.h"
 
 template<typename T>
-class System {
+class SystemECS {
 public:
-    System(Component<T>& comp) : component(comp) {}
+    SystemECS(Component<T>& comp) : component(comp) {}
 
     template<typename Func>
     void update(Func&& func, int8_t iteration_step = 1); //update ALL components with a function and an iteration step
