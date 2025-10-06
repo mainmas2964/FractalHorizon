@@ -1,21 +1,28 @@
 #pragma once
 
-#include <string>
+#include <vector>
+#include <memory>
+#include <chrono>
+
+class System;
 
 class Engine {
 public:
     Engine();
     ~Engine();
 
-    // Initialize engine subsystems. Return true on success.
     bool init();
-
-    // Run the main loop (placeholder).
     void run();
-
-    // Cleanup resources.
     void shutdown();
+    void addSystem(std::shared_ptr<System> sys);
+    void stop();
 
 private:
     bool initialized_;
+    std::vector<std::shared_ptr<System>> systems_;
+    std::chrono::steady_clock::time_point lastFrameTime_;
+    float accumulateTime_;
+    const float fixedDelta_ = 1.0f / 60.0f;
+    bool running_;
+    int maxTicks_ = 0; // 0 = бесконечно
 };

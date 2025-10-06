@@ -1,33 +1,54 @@
 #include "Engine.h"
+#include "System.h"
 #include <iostream>
 
-Engine::Engine() : initialized_(false) {}
-Engine::~Engine() {}
+Engine::Engine()
+    : initialized_(false),
+      accumulateTime_(0.0f),
+      running_(false),
+      maxTicks_(0) {}
+
+Engine::~Engine() { shutdown(); }
 
 bool Engine::init() {
-    std::cout << "[Engine] init()" << std::endl;
+    lastFrameTime_ = std::chrono::steady_clock::now();
     initialized_ = true;
-    // TODO: initialize graphics, window, input, audio, etc.
-    return initialized_;
+    return true;
+}
+
+void Engine::addSystem(std::shared_ptr<System> sys) {
+    systems_.push_back(sys);
 }
 
 void Engine::run() {
-    std::cout << "[Engine] run() - entering main loop (placeholder)" << std::endl;
-    if (!initialized_) {
-        std::cout << "[Engine] run() called before init()" << std::endl;
-        return;
+    if (!initialized_) return;
+    running_ = true;
+    int tickCount = 0;
+    while (running_) {
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<float> delta = now - lastFrameTime_;
+        lastFrameTime_ = now;
+        float dt = delta.count();
+        accumulateTime_ += dt;
+
+        while (accumulateTime_ >= fixedDelta_) {
+            for (auto &sys : systems_) sys->fixedUpdate(fixedDelta_);
+            accumulateTime_ -= fixedDelta_;
+        }
+
+        for (auto &sys : systems_) sys->update(dt);
+
+        for (auto &sys : systems_) sys->render();
+
+        if (maxTicks_ > 0 && ++tickCount >= maxTicks_) running_ = false;
     }
-    // Placeholder main loop: print a few ticks then exit.
-    for (int i = 0; i < 3; ++i) {
-        std::cout << "[Engine] tick " << (i + 1) << std::endl;
-    }
-    std::cout << "[Engine] run() - exiting main loop" << std::endl;
+}
+
+void Engine::stop() {
+    running_ = false;
 }
 
 void Engine::shutdown() {
-    std::cout << "[Engine] shutdown()" << std::endl;
-    if (initialized_) {
-        // TODO: cleanup subsystems
-        initialized_ = false;
-    }
+    systems_.clear();
+    initialized_ = false;
 }
