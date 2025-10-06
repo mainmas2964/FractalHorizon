@@ -89,6 +89,14 @@ build CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o: CXX_COMPILER__Fracta
   OBJECT_DIR = CMakeFiles/FractalHorizon3DEngine.dir
   OBJECT_FILE_DIR = CMakeFiles/FractalHorizon3DEngine.dir/src
 
+build CMakeFiles/FractalHorizon3DEngine.dir/src/start/test.cpp.o: CXX_COMPILER__FractalHorizon3DEngine_unscanned_Debug /home/mainmasgoose/projects/FractalHorizon/src/start/test.cpp || cmake_object_order_depends_target_FractalHorizon3DEngine
+  DEFINES = -DPLATFORM_LINUX
+  DEP_FILE = CMakeFiles/FractalHorizon3DEngine.dir/src/start/test.cpp.o.d
+  FLAGS = -g -std=c++17
+  INCLUDES = -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm
+  OBJECT_DIR = CMakeFiles/FractalHorizon3DEngine.dir
+  OBJECT_FILE_DIR = CMakeFiles/FractalHorizon3DEngine.dir/src/start
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target FractalHorizon3DEngine
@@ -97,7 +105,7 @@ build CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o: CXX_COMPILER__Fracta
 #############################################
 # Link the executable FractalHorizon3DEngine
 
-build FractalHorizon3DEngine: CXX_EXECUTABLE_LINKER__FractalHorizon3DEngine_Debug CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/component/component.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/system/system.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/glad.c.o CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o | external/GLFW/src/libglfw3.a external/glm/glm/libglm.a /usr/lib64/librt.a /usr/lib64/libm.so || external/GLFW/src/libglfw3.a external/glm/glm/libglm.a
+build FractalHorizon3DEngine: CXX_EXECUTABLE_LINKER__FractalHorizon3DEngine_Debug CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/component/component.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/ECS/system/system.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/Engine.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/glad.c.o CMakeFiles/FractalHorizon3DEngine.dir/src/main.cpp.o CMakeFiles/FractalHorizon3DEngine.dir/src/start/test.cpp.o | external/GLFW/src/libglfw3.a external/glm/glm/libglm.a /usr/lib64/librt.a /usr/lib64/libm.so || external/GLFW/src/libglfw3.a external/glm/glm/libglm.a
   DEP_FILE = CMakeFiles/FractalHorizon3DEngine.dir/link.d
   FLAGS = -g
   LINK_FLAGS = -Wl,--dependency-file=CMakeFiles/FractalHorizon3DEngine.dir/link.d

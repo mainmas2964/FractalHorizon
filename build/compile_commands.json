@@ -31,6 +31,12 @@
 },
 {
   "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/start/test.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/start/test.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/start/test.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/start/test.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
   "command": "/usr/bin/gcc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/src -I/home/mainmasgoose/projects/FractalHorizon/build/external/GLFW/src -g -std=c99 -fPIC -Wall -o external/GLFW/src/CMakeFiles/glfw.dir/context.c.o -c /home/mainmasgoose/projects/FractalHorizon/external/GLFW/src/context.c",
   "file": "/home/mainmasgoose/projects/FractalHorizon/external/GLFW/src/context.c",
   "output": "external/GLFW/src/CMakeFiles/glfw.dir/context.c.o"

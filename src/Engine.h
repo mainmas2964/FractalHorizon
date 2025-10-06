@@ -7,7 +7,7 @@ public:
     Engine();
     ~Engine();
 
-    
+
     bool init(); // initialize engine subsystems. Return true on success
     bool initECS(); // initialize ECS (placeholder)
     //TODO: do realization to this method in Engine.cpp
@@ -20,6 +20,11 @@ public:
 
 
     void shutdown(); // cleanup resources
+    void cleanup(); // cleanup ECS & other subsystems (placeholder)
+    void saveState(const std::string& filename); // save engine state to a file (placeholder)
+    //TODO: do realization to this method in Engine.cpp
+    void loadState(const std::string& filename); // load engine state from a file (placeholder)
+    //TODO: do realization to this method in Engine.cpp
 
 
 private:
