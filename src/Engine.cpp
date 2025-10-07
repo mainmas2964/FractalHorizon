@@ -4,8 +4,8 @@
 #include <iostream>
 
 // Подсистемы
-#include "RenderCore.h"
-#include "InputSystem.h"
+#include "render/RenderCore.h"
+#include "render/InputSystem.h"
 
 Engine::Engine()
     : initialized_(false),

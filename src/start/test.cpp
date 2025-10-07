@@ -5,6 +5,7 @@
 #include <cstdint>
 #include "ECS/component/component.cpp"
 #include "ECS/entity/entity.h"
+#include "test.h"
 // function to execute ECS test
 void execute1() {
     // adding structs for components:

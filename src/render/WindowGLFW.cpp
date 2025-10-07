@@ -1,7 +1,6 @@
-#include "WindowGLFW.h"
 #include <iostream>
 #include "glad/glad.h"
-
+#include "WindowGLFW.h"
 WindowGLFW::WindowGLFW(const std::string& title, int width, int height)
     : title_(title), width_(width), height_(height), window_(nullptr) {}
 

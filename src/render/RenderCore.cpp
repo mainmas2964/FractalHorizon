@@ -1,5 +1,5 @@
-#include "RenderCore.h"
 #include "glad/glad.h"
+#include "RenderCore.h"
 #include <iostream>
 
 RenderCore::RenderCore()
