@@ -28,7 +28,7 @@ void execute1() {
     Component<attack> attackComp(maxEntities);
 
     // create system:
-    System<attack> attackEntitySystem(attackComp);
+    SystemECS<attack> attackEntitySystem(attackComp);
     
     // create entities
     Entity e1{0};

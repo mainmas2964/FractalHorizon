@@ -6,21 +6,21 @@
 #include "system.h"
 template<typename T>
 template<typename Func>
-void System<T>::update(Func&& func, int8_t iteration_step) {
+void SystemECS<T>::update(Func&& func, int8_t iteration_step) {
     for (size_t i = 0; i < component.size(); i += iteration_step) {
         func(component.comp[i], i);
     }
 }
 template<typename T>
 template<typename Func>
-void System<T>::updateSingleComp(Func&& func, Entity e) {
+void SystemECS<T>::updateSingleComp(Func&& func, Entity e) {
     if (component.hasComponent(e)) {
         func(component.getComponent(e));
     }
 }
 // explicit template instantiation for common types if needed
-template class System<int>;
-template class System<float>;
-template class System<double>; 
-template class System<std::string>; 
+template class SystemECS<int>;
+template class SystemECS<float>;
+template class SystemECS<double>; 
+template class SystemECS<std::string>; 
 // add more types as needed
