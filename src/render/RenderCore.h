@@ -16,6 +16,7 @@ public:
 
     bool shouldClose() const;
 
+    GLFWwindow* getWindowHandle() const;
 private:
     std::unique_ptr<WindowGLFW> window_;
 };
