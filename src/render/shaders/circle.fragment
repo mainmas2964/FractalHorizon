@@ -1,0 +1,21 @@
+#version 330 core
+
+in vec2 vPos;
+out vec4 FragColor;
+uniform vec2 u_resolution;
+uniform float u_radius;
+uniform vec3 u_color;
+
+void main() 
+{
+  vec2 uv = vPos;
+  uv.x *= u_resolution.x / u_resolution.y;
+
+  float d = length(uv);
+  float r = u_radius;
+
+  float a = smoothstep(r, r - 0.005, d);
+  vec3 bg = vec3(0.02, 0.03, 0.05);
+
+  FragColor = vec4(mix(u_color, bg, a), 1.0);
+}
