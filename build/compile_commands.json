@@ -43,6 +43,18 @@
 },
 {
   "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/render/Shader.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/render/Shader.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/render/Shader.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/render/Shader.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/render/UniformState.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/render/UniformState.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/render/UniformState.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/render/UniformState.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
   "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/render/WindowGLFW.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/render/WindowGLFW.cpp",
   "file": "/home/mainmasgoose/projects/FractalHorizon/src/render/WindowGLFW.cpp",
   "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/render/WindowGLFW.cpp.o"
