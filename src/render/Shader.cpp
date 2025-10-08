@@ -34,6 +34,28 @@ void Shader::use() {
         glUseProgram(ID_);
     }
 }
+void Shader::compileShader(const char* shaderSourcePath) {
+    unsigned int shader;
+    int success;
+    char infoLog[512];
+    const char* shaderSource;
+    std::string shaderSourceStr_;
+    openFile(shaderSourcePath, shaderSourceStr_);
+    shaderSource = shaderSourceStr_.c_str();
+    shader = glCreateShader(GL_FRAGMENT_SHADER); // for now only fragment shader
+    glShaderSource(shader, 1, &shaderSource, NULL);
+    glCompileShader(shader);
+    // check for compile errors
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(shader, 512, NULL, infoLog);
+        std::cerr << "ERROR::SHADER::COMPUTE::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    glAttachShader(ID_, shader);
+    glLinkProgram(ID_);
+    glDeleteShader(shader);
+
+}
 void Shader::compile(const char* vertexSourcePath, const char* fragmentSourcePath) {
     unsigned int vertex, fragment;
     int success;
