@@ -2,6 +2,8 @@
 
 #include "System.h"
 #include "WindowGLFW.h"
+#include "Shader.h"
+#include "UniformState.h"
 #include <memory>
 
 class RenderCore : public System {
@@ -19,4 +21,6 @@ public:
     GLFWwindow* getWindowHandle() const;
 private:
     std::unique_ptr<WindowGLFW> window_;
+    Shader shader_;
+    UniformState uniforms_;
 };
