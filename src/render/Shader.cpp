@@ -11,7 +11,18 @@
 #include <sstream>
 #include <iostream>
 
-
+void openFile(const char* path, std::string& out) {
+    std::ifstream file;
+    file.open(path);
+    if (!file.is_open()) {
+        std::cerr << "could not open file: " << path << std::endl;
+        return;
+    }
+    std::stringstream stream;
+    stream << file.rdbuf();
+    out = stream.str();
+    file.close();
+};
 Shader::Shader() : ID_(0) {}
 Shader::~Shader() {
     if (ID_ != 0) {
@@ -23,10 +34,19 @@ void Shader::use() {
         glUseProgram(ID_);
     }
 }
-void Shader::compile(const char* vertexSource, const char* fragmentSource) {
+void Shader::compile(const char* vertexSourcePath, const char* fragmentSourcePath) {
     unsigned int vertex, fragment;
     int success;
     char infoLog[512];
+    const char* vertexSource;
+    const char* fragmentSource;
+    std::string vertexSourceStr_;
+    std::string fragmentSourceStr_;
+    openFile(vertexSourcePath, vertexSourceStr_);
+    openFile(fragmentSourcePath, fragmentSourceStr_);
+    vertexSource = vertexSourceStr_.c_str();
+    fragmentSource = fragmentSourceStr_.c_str();
+
 
     // vertex Shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
