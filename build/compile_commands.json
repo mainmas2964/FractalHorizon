@@ -31,9 +31,33 @@
 },
 {
   "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/render/InputSystem.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/render/InputSystem.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/render/InputSystem.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/render/InputSystem.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/render/RenderCore.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/render/RenderCore.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/render/RenderCore.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/render/RenderCore.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/render/WindowGLFW.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/render/WindowGLFW.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/render/WindowGLFW.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/render/WindowGLFW.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
   "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/start/test.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/start/test.cpp",
   "file": "/home/mainmasgoose/projects/FractalHorizon/src/start/test.cpp",
   "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/start/test.cpp.o"
+},
+{
+  "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
+  "command": "/usr/bin/g++ -DPLATFORM_LINUX -I/home/mainmasgoose/projects/FractalHorizon/src -I/home/mainmasgoose/projects/FractalHorizon/external -I/home/mainmasgoose/projects/FractalHorizon/external/GLFW/include -I/home/mainmasgoose/projects/FractalHorizon/external/glm -g -std=c++17 -o CMakeFiles/FractalHorizon3DEngine.dir/src/world/chunk/chunk.cpp.o -c /home/mainmasgoose/projects/FractalHorizon/src/world/chunk/chunk.cpp",
+  "file": "/home/mainmasgoose/projects/FractalHorizon/src/world/chunk/chunk.cpp",
+  "output": "CMakeFiles/FractalHorizon3DEngine.dir/src/world/chunk/chunk.cpp.o"
 },
 {
   "directory": "/home/mainmasgoose/projects/FractalHorizon/build",
