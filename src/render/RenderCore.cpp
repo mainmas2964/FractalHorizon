@@ -37,6 +37,9 @@ void RenderCore::render() {
     // simple clear pass real render passes will live in render/
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    shader_.use();
+    uniforms_.upload(shader_);
+
     window_->swapBuffers();
 }
 
