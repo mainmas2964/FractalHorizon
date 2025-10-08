@@ -4,6 +4,7 @@
 #include "WindowGLFW.h"
 #include "Shader.h"
 #include "UniformState.h"
+#include <glm/glm.hpp>
 #include <memory>
 
 class RenderCore : public System {
