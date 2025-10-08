@@ -57,6 +57,11 @@ void WindowGLFW::pollEvents() {
 
 void WindowGLFW::swapBuffers() {
     if (window_) glfwSwapBuffers(window_);
+    if (!window_) {
+    std::cerr << "[RenderCore] Error: window_ is null!" << std::endl;
+    return;
+}
+
 }
 
 bool WindowGLFW::shouldClose() const {

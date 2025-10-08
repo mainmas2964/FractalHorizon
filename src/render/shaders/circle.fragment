@@ -1,6 +1,6 @@
 #version 330 core
 
-in vec2 vPos;
+in vec3 vPos;
 out vec4 FragColor;
 uniform vec2 u_resolution;
 uniform float u_radius;
@@ -8,8 +8,8 @@ uniform vec3 u_color;
 
 void main() 
 {
-  vec2 uv = vPos;
-  uv.x *= u_resolution.x / u_resolution.y;
+ vec2 uv = gl_FragCoord.xy / u_resolution * 2.0 - 1.0;
+uv.x *= u_resolution.x / u_resolution.y;
 
   float d = length(uv);
   float r = u_radius;
