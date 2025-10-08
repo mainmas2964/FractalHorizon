@@ -2,7 +2,7 @@
 #define SHADER_H_
 #include "glad/glad.h"
 #include <string>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/vec2.hpp>
