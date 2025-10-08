@@ -1,8 +1,8 @@
 #pragma once
 
 #include "System.h"
-#include "WindowGLFW.h"
 #include "Shader.h"
+#include "WindowGLFW.h"
 #include "UniformState.h"
 #include <glm/glm.hpp>
 #include <memory>
