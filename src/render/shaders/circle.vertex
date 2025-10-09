@@ -3,6 +3,6 @@ layout(location = 0) in vec3 aPos;
 out vec3 vPos;
 uniform mat4 u_trans;
 void main() {
-  vPos = u_trans * aPos;
+  vPos = aPos;
   gl_Position = u_trans * vec4(aPos, 1.0);
 }
