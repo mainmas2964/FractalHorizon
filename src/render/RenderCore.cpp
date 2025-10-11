@@ -11,7 +11,11 @@
 RenderCore::RenderCore()
     : window_(std::make_unique<WindowGLFW>("FractalHorizon", 1280, 720)),
       chunk_(nullptr),
-      chunkRenderer_(nullptr) {}
+      chunkRenderer_(nullptr),
+      _animAngle(0.0f),
+      _rotationSpeed(glm::radians(30.0f)),
+      _rotateModel(true)
+{}
 
 RenderCore::~RenderCore() {
     // Release chunk renderer and chunk (ChunkRenderer destructor deletes GL objects)
@@ -47,7 +51,7 @@ bool RenderCore::init() {
     // Try to install GL debug callback if available (via glfwGetProcAddress)
     using DebugCallbackType = void(*)(GLenum, GLenum, GLuint, GLenum, GLsizei, const GLchar*, const void*);
     using DebugMessageCallbackProc = void(*)(DebugCallbackType, const void*);
-    void* proc = (void*)glfwGetProcAddress("glDebugMessageCallback");
+    void* proc = reinterpret_cast<void*>(glfwGetProcAddress("glDebugMessageCallback"));
     if (proc) {
         DebugMessageCallbackProc dbg = reinterpret_cast<DebugMessageCallbackProc>(proc);
         if (dbg) {
@@ -100,8 +104,20 @@ bool RenderCore::init() {
 }
 
 void RenderCore::update(float dt) {
-    (void)dt;
     if (window_) window_->pollEvents();
+
+    // advance animation angle
+    _animAngle += _rotationSpeed * dt;
+    if (_animAngle > glm::two_pi<float>()) _animAngle -= glm::two_pi<float>();
+
+    // toggle rotate mode on T press (edge-trigger)
+    static bool tPrev = false;
+    bool tNow = (glfwGetKey(window_->getHandle(), GLFW_KEY_T) == GLFW_PRESS);
+    if (tNow && !tPrev) {
+        _rotateModel = !_rotateModel;
+        std::cout << "[RenderCore] rotateModel = " << (_rotateModel ? "model" : "camera") << std::endl;
+    }
+    tPrev = tNow;
 }
 
 void RenderCore::render() {
@@ -120,11 +136,27 @@ void RenderCore::render() {
     // center of chunk in world coords
     glm::vec3 chunkCenter = glm::vec3(CHUNK_X * 0.5f, CHUNK_Y * 0.5f, CHUNK_Z * 0.5f);
 
-    // model: translate chunk so its center is at origin
+    // base model: translate chunk so its center is at origin
     glm::mat4 model = glm::translate(glm::mat4(1.0f), -chunkCenter);
 
-    // view: place a camera looking at origin (where chunk will be centered)
-    glm::vec3 camPos = glm::vec3(0.0f, 8.0f, 40.0f);
+    // rotation around Y
+    glm::mat4 rot = glm::rotate(glm::mat4(1.0f), _animAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    // camera and model behavior
+    glm::vec3 camPos;
+    if (_rotateModel) {
+        // rotate the model around Y
+        model = rot * model;
+        camPos = glm::vec3(0.0f, CHUNK_Y * 0.5f + 8.0f, CHUNK_Z * 2.0f);
+    } else {
+        // orbit the camera around the chunk center
+        float radius = std::max<float>(CHUNK_X, CHUNK_Z) * 2.5f + 10.0f;
+        camPos.x = cosf(_animAngle) * radius;
+        camPos.z = sinf(_animAngle) * radius;
+        camPos.y = CHUNK_Y * 0.5f + 8.0f;
+    }
+
+    // look at the center of the chunk
     glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     // final MVP

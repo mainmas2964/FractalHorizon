@@ -12,11 +12,11 @@
 #define CHUNK_SIZE (CHUNK_X * CHUNK_Y * CHUNK_Z)
 
 struct VoxelVertex {
-    float x, y, z;
-    float u, v;
-    uint8_t light;
-    uint8_t _pad[3];
+    float x, y, z;      // position
+    float nx, ny, nz;   // normal (vec3)
+    float u, v;         // uv
 };
+static_assert(sizeof(VoxelVertex) == 32, "VoxelVertex size must be 32");
 
 class Chunk {
 public:

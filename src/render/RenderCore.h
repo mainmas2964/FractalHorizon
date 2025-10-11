@@ -24,6 +24,9 @@ public:
     GLFWwindow* getWindowHandle() const;
 
 private:
+    float _animAngle = 0.0f;
+    bool _rotateModel = true;
+    float _rotationSpeed = glm::radians(30.0f);
     std::unique_ptr<WindowGLFW> window_;
     Shader shader_;
     UniformState uniforms_;
