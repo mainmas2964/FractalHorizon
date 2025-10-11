@@ -1,8 +1,16 @@
-#version 330 core
+#version 430 core
+
 layout(location = 0) in vec3 aPos;
-out vec3 vPos;
-uniform mat4 u_trans;
+layout(location = 1) in vec2 aUV;
+layout(location = 2) in uint aLight;
+
+uniform mat4 uMVP;
+
+out vec2 vUV;
+flat out uint vLight;
+
 void main() {
-  vPos = aPos;
-  gl_Position = u_trans * vec4(aPos, 1.0);
+    vUV = aUV;
+    vLight = aLight;
+    gl_Position = uMVP * vec4(aPos, 1.0);
 }

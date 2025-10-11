@@ -11,7 +11,8 @@
 #include <sstream>
 #include <iostream>
 
-void openFile(const char* path, std::string& out) {
+// Read file into out string, remove BOM, ensure trailing newline
+static void openFile(const char* path, std::string& out) {
     std::ifstream in(path, std::ios::in | std::ios::binary);
     if (!in) {
         std::cerr << "[Shader] openFile: failed to open '" << path << "'\n";
@@ -22,7 +23,6 @@ void openFile(const char* path, std::string& out) {
     ss << in.rdbuf();
     out = ss.str();
 
-    // Remove UTF-8 BOM if present
     if (out.size() >= 3 &&
         static_cast<unsigned char>(out[0]) == 0xEF &&
         static_cast<unsigned char>(out[1]) == 0xBB &&
@@ -31,7 +31,6 @@ void openFile(const char* path, std::string& out) {
         std::cerr << "[Shader] openFile: removed UTF-8 BOM from '" << path << "'\n";
     }
 
-    // Ensure there's a trailing newline (some drivers are picky)
     if (out.empty() || out.back() != '\n') out.push_back('\n');
 
     std::cerr << "[Shader] openFile: read '" << path << "' (" << out.size() << " bytes)\n";
@@ -42,26 +41,27 @@ Shader::Shader() : ID_(0) {}
 Shader::~Shader() {
     if (ID_ != 0) {
         glDeleteProgram(ID_);
+        ID_ = 0;
     }
 }
 
-static bool programIsLinked(GLuint id) {
-    if (!id) return false;
-    if (!glIsProgram(id)) return false;
-    GLint status = GL_FALSE;
-    glGetProgramiv(id, GL_LINK_STATUS, &status);
-    return status == GL_TRUE;
+bool Shader::isValid() const {
+    return programIsLinked(ID_);
+}
+
+GLuint Shader::getID() const {
+    return ID_;
 }
 
 void Shader::use() {
     if (!programIsLinked(ID_)) {
-      //  std::cerr << "[Shader] Attempt to use unlinked program (ID=" << ID_ << ")\n";
+        std::cerr << "[Shader] use(): program not linked or invalid (ID=" << ID_ << ")\n";
         return;
     }
     glUseProgram(ID_);
 }
 
-// helper to get uniform location safely
+// Safe helper to get uniform location; returns -1 if program invalid or uniform not found.
 static GLint getUniformLocationSafe(GLuint program, const char* name) {
     if (!programIsLinked(program)) {
         std::cerr << "[Shader] getUniformLocationSafe: program not linked (ID=" << program << ") for uniform '" << name << "'\n";
@@ -75,31 +75,45 @@ static GLint getUniformLocationSafe(GLuint program, const char* name) {
 }
 
 void Shader::compileShader(const char* shaderSourcePath) {
+    // Legacy: compile single fragment shader into a program (kept for compatibility)
     std::string shaderSourceStr;
     openFile(shaderSourcePath, shaderSourceStr);
     const char* shaderSource = shaderSourceStr.c_str();
 
-    unsigned int shader = glCreateShader(GL_FRAGMENT_SHADER); // Only fragment for now
+    GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(shader, 1, &shaderSource, nullptr);
     glCompileShader(shader);
 
-    int success;
-    char infoLog[512];
+    GLint success = GL_FALSE;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {
-        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        std::cerr << "[Shader] Fragment compilation failed:\n" << infoLog << std::endl;
+        GLint len = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+        std::string log(len > 0 ? len : 1, '\0');
+        glGetShaderInfoLog(shader, len, nullptr, &log[0]);
+        std::cerr << "[Shader] Fragment compilation failed for '" << shaderSourcePath << "':\n" << log << std::endl;
+        glDeleteShader(shader);
+        ID_ = 0;
+        return;
     }
 
-    ID_ = glCreateProgram();
-    glAttachShader(ID_, shader);
-    glLinkProgram(ID_);
+    GLuint program = glCreateProgram();
+    glAttachShader(program, shader);
+    glLinkProgram(program);
 
-    glGetProgramiv(ID_, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(ID_, 512, nullptr, infoLog);
-        std::cerr << "[Shader] Program linking failed:\n" << infoLog << std::endl;
+    GLint linkSuccess = GL_FALSE;
+    glGetProgramiv(program, GL_LINK_STATUS, &linkSuccess);
+    if (!linkSuccess) {
+        GLint len = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
+        std::string log(len > 0 ? len : 1, '\0');
+        glGetProgramInfoLog(program, len, nullptr, &log[0]);
+        std::cerr << "[Shader] Program linking failed:\n" << log << std::endl;
+        glDeleteProgram(program);
+        program = 0;
+        ID_ = 0;
     } else {
+        ID_ = program;
         std::cout << "[shader] program linked successfully (ID = " << ID_ << ")\n";
     }
 
@@ -162,68 +176,99 @@ void Shader::compile(const char* vertexSourcePath, const char* fragmentSourcePat
         return;
     }
 
-    ID_ = glCreateProgram();
-    glAttachShader(ID_, vertex);
-    glAttachShader(ID_, fragment);
-    glLinkProgram(ID_);
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vertex);
+    glAttachShader(program, fragment);
+    glLinkProgram(program);
 
     GLint linkSuccess = GL_FALSE;
-    glGetProgramiv(ID_, GL_LINK_STATUS, &linkSuccess);
+    glGetProgramiv(program, GL_LINK_STATUS, &linkSuccess);
     if (!linkSuccess) {
         GLint len = 0;
-        glGetProgramiv(ID_, GL_INFO_LOG_LENGTH, &len);
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
         std::string log(len > 0 ? len : 1, '\0');
-        glGetProgramInfoLog(ID_, len, nullptr, &log[0]);
+        glGetProgramInfoLog(program, len, nullptr, &log[0]);
         std::cerr << "[Shader] Program linking failed:\n" << log << std::endl;
-        glDeleteProgram(ID_);
+        glDeleteProgram(program);
         ID_ = 0;
     } else {
+        ID_ = program;
         std::cout << "[shader] program linked successfully (ID = " << ID_ << ")\n";
     }
-    
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
 
+// Uniform setters with program validity guard
+
 void Shader::setBool(const std::string& name, bool value) const {
+    if (!programIsLinked(ID_)) {
+        std::cerr << "[Shader] setBool skipped: program not linked (ID=" << ID_ << ")\n";
+        return;
+    }
     GLint loc = glGetUniformLocation(ID_, name.c_str());
     if (loc == -1) return;
     glUniform1i(loc, (int)value);
 }
 
 void Shader::setInt(const std::string& name, int value) const {
+    if (!programIsLinked(ID_)) {
+        std::cerr << "[Shader] setInt skipped: program not linked (ID=" << ID_ << ")\n";
+        return;
+    }
     GLint loc = glGetUniformLocation(ID_, name.c_str());
     if (loc == -1) return;
     glUniform1i(loc, value);
 }
 
 void Shader::setFloat(const std::string& name, float value) const {
+    if (!programIsLinked(ID_)) {
+        std::cerr << "[Shader] setFloat skipped: program not linked (ID=" << ID_ << ")\n";
+        return;
+    }
     GLint loc = glGetUniformLocation(ID_, name.c_str());
     if (loc == -1) return;
     glUniform1f(loc, value);
 }
 
 void Shader::setMat4(const std::string& name, const glm::mat4& mat) const {
+    if (!programIsLinked(ID_)) {
+        std::cerr << "[Shader] setMat4 skipped: program not linked (ID=" << ID_ << ")\n";
+        return;
+    }
     GLint loc = glGetUniformLocation(ID_, name.c_str());
     if (loc == -1) return;
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void Shader::setVec2(const std::string& name, const glm::vec2& value) const {
+    if (!programIsLinked(ID_)) {
+        std::cerr << "[Shader] setVec2 skipped: program not linked (ID=" << ID_ << ")\n";
+        return;
+    }
     GLint loc = glGetUniformLocation(ID_, name.c_str());
     if (loc == -1) return;
     glUniform2fv(loc, 1, glm::value_ptr(value));
 }
 
 void Shader::setVec3(const std::string& name, const glm::vec3& value) const {
+    if (!programIsLinked(ID_)) {
+        std::cerr << "[Shader] setVec3 skipped: program not linked (ID=" << ID_ << ")\n";
+        return;
+    }
     GLint loc = glGetUniformLocation(ID_, name.c_str());
     if (loc == -1) return;
     glUniform3fv(loc, 1, glm::value_ptr(value));
 }
 
 void Shader::setVec4(const std::string& name, const glm::vec4& value) const {
+    if (!programIsLinked(ID_)) {
+        std::cerr << "[Shader] setVec4 skipped: program not linked (ID=" << ID_ << ")\n";
+        return;
+    }
     GLint loc = glGetUniformLocation(ID_, name.c_str());
     if (loc == -1) return;
     glUniform4fv(loc, 1, glm::value_ptr(value));
 }
+

@@ -1,9 +1,10 @@
 #ifndef VOXEL_H
 #define VOXEL_H
-#include <stdint.h>
-struct voxel
-{
-    uint32_t id;
+#include <cstdint>
+
+struct Voxel {
+    uint32_t id; // заготовка для типов вокселей
+    inline bool isAir() const { return id == 0u; }
 };
 
-#endif
+#endif // VOXEL_H

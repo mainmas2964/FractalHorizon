@@ -1,21 +1,15 @@
-#version 330 core
+#version 430 core
 
-in vec3 vPos;
+in vec2 vUV;
+flat in uint vLight;
+
 out vec4 FragColor;
-uniform vec2 u_resolution;
-uniform float u_radius;
+
 uniform vec3 u_color;
 
-void main() 
-{
- vec2 uv = gl_FragCoord.xy / u_resolution * 2.0 - 1.0;
-uv.x *= u_resolution.x / u_resolution.y;
-
-  float d = length(uv);
-  float r = u_radius;
-
-  float a = smoothstep(r, r - 0.005, d);
-  vec3 bg = vec3(0.02, 0.03, 0.05);
-
-  FragColor = vec4(mix(u_color, bg, a), 1.0);
+void main() {
+    // debug: tint by UV and a constant color, optionally mod by light
+    float l = float(vLight) * 0.1; // пример использования света
+    vec3 base = u_color * (0.5 + 0.5 * vec3(vUV, 0.0));
+    FragColor = vec4(clamp(base + l, 0.0, 1.0), 1.0);
 }
