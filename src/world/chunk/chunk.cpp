@@ -43,13 +43,13 @@ void Chunk::load() {
         std::cerr << "[Chunk] Warning: already loaded\n";
         return;
     }
-    for (int z = 0; z < CHUNK_Z; ++z)
-    for (int y = 0; y < CHUNK_Y; ++y)
     for (int x = 0; x < CHUNK_X; ++x) {
-        auto &vo = _voxels[(z * CHUNK_Y + y) * CHUNK_X + x];
-        vo.id = (y < 4) ? 1u : 0u;
+        for (int y = 0; y < CHUNK_Y; ++y) {
+            for (int z = 0; z < CHUNK_Z; ++z) {
+                blocks[x][y][z] = (rand() % 100 < 30) ? BlockType::Solid : BlockType::Air;
+            }
+        }
     }
-    _isLoaded = true;
 }
 
 void Chunk::unload() {
@@ -92,6 +92,14 @@ void Chunk::buildMesh(std::vector<VoxelVertex>& outVerts, std::vector<uint32_t>&
             float oy = float(y + worldChunkY * CHUNK_Y);
             float oz = float(z + worldChunkZ * CHUNK_Z);
 
+uint32_t light = 255; // освещение как по граням 
+
+switch (f) {
+    case 4: light = 80; break;   // +Z
+    case 5: light = 120; break;  // -Z
+    case 0: case 1: light = 180; break; // +X
+    case 2: case 3: light = 255; break; // +Y
+}
             for (int vi = 0; vi < 4; ++vi) {
                 VoxelVertex vv;
                 vv.x = ox + FACE_POS[f][vi][0];
@@ -99,7 +107,8 @@ void Chunk::buildMesh(std::vector<VoxelVertex>& outVerts, std::vector<uint32_t>&
                 vv.z = oz + FACE_POS[f][vi][2];
                 vv.u = FACE_UV[vi][0];
                 vv.v = FACE_UV[vi][1];
-                vv.light = 255;
+            //  vv.light = 255;
+                vv.light = light;
                 vv._pad[0] = vv._pad[1] = vv._pad[2] = 0;
                 outVerts.push_back(vv);
             }
