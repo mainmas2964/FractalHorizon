@@ -7,7 +7,7 @@
 #include <iostream>
 #include <filesystem>
 #include <GLFW/glfw3.h>
-
+#include "Camera.h"
 RenderCore::RenderCore()
     : window_(std::make_unique<WindowGLFW>("FractalHorizon", 1280, 720)),
       chunk_(nullptr),
@@ -35,7 +35,7 @@ bool RenderCore::init() {
         std::cerr << "[RenderCore] Window init failed\n";
         return false;
     }
-
+    Camera camera;
     // Print GL version info to validate context / glad
     const GLubyte* ver = glGetString(GL_VERSION);
     const GLubyte* glsl = glGetString(GL_SHADING_LANGUAGE_VERSION);
