@@ -1,21 +1,12 @@
-#version 330 core
+#version 430 core
 
-in vec3 vPos;
+in vec3 vNormal;
+in vec2 vUV;
+
 out vec4 FragColor;
-uniform vec2 u_resolution;
-uniform float u_radius;
-uniform vec3 u_color;
 
-void main() 
-{
- vec2 uv = gl_FragCoord.xy / u_resolution * 2.0 - 1.0;
-uv.x *= u_resolution.x / u_resolution.y;
-
-  float d = length(uv);
-  float r = u_radius;
-
-  float a = smoothstep(r, r - 0.005, d);
-  vec3 bg = vec3(0.02, 0.03, 0.05);
-
-  FragColor = vec4(mix(u_color, bg, a), 1.0);
+void main() {
+    // map normal from [-1,1] to [0,1]
+    vec3 n = normalize(vNormal) * 0.5 + 0.5;
+    FragColor = vec4(n, 1.0);
 }
