@@ -8,13 +8,18 @@
 #include <filesystem>
 #include <GLFW/glfw3.h>
 #include "Camera.h"
+#include "InputSystem.h"
+
+static std::unique_ptr<InputSystem> inputSystem_;
 RenderCore::RenderCore()
     : window_(std::make_unique<WindowGLFW>("FractalHorizon", 1280, 720)),
       chunk_(nullptr),
       chunkRenderer_(nullptr),
       _animAngle(0.0f),
       _rotationSpeed(glm::radians(30.0f)),
-      _rotateModel(true)
+      _rotateModel(false)
+      
+      
 {}
 
 RenderCore::~RenderCore() {
@@ -35,7 +40,7 @@ bool RenderCore::init() {
         std::cerr << "[RenderCore] Window init failed\n";
         return false;
     }
-    Camera camera;
+
     // Print GL version info to validate context / glad
     const GLubyte* ver = glGetString(GL_VERSION);
     const GLubyte* glsl = glGetString(GL_SHADING_LANGUAGE_VERSION);
@@ -48,7 +53,18 @@ bool RenderCore::init() {
     if (h == 0) h = 1;
     glViewport(0, 0, w, h);
 
-    // Try to install GL debug callback if available (via glfwGetProcAddress)
+
+    float aspect = static_cast<float>(w) / static_cast<float>(h);
+    camera.setPerspective(45.0f, aspect, 0.1f, 1000.0f);
+
+    glm::vec3 chunkCenter = glm::vec3(CHUNK_X * 0.5f, CHUNK_Y * 0.5f, CHUNK_Z * 0.5f);
+    float radius = std::max<float>(CHUNK_X, CHUNK_Z) * 2.5f + 10.0f;
+    glm::vec3 camPos = glm::vec3(radius, CHUNK_Y * 0.5f + 8.0f, 0.0f);
+    camera.setPosition(camPos);
+    camera.setLookAt(chunkCenter - camPos);
+    camera.setUp(glm::vec3(0.0f, 1.0f, 0.0f));
+
+   
     using DebugCallbackType = void(*)(GLenum, GLenum, GLuint, GLenum, GLsizei, const GLchar*, const void*);
     using DebugMessageCallbackProc = void(*)(DebugCallbackType, const void*);
     void* proc = reinterpret_cast<void*>(glfwGetProcAddress("glDebugMessageCallback"));
@@ -93,12 +109,13 @@ bool RenderCore::init() {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
 
-    // Create and upload a single chunk and its GPU buffers
     chunk_ = std::make_unique<Chunk>();
     chunk_->load();
 
     chunkRenderer_ = std::make_unique<ChunkRenderer>();
     chunkRenderer_->upload(*chunk_);
+
+    inputSystem_ = std::make_unique<InputSystem>(window_->getHandle());
 
     return true;
 }
@@ -106,7 +123,29 @@ bool RenderCore::init() {
 void RenderCore::update(float dt) {
     if (window_) window_->pollEvents();
 
-    // advance animation angle
+
+    if (inputSystem_) inputSystem_->update(dt);
+
+
+    if (inputSystem_) {
+        if (inputSystem_->isKeyDown(GLFW_KEY_W)) camera.processKeyboard(Camera::Move::Forward, dt);
+        if (inputSystem_->isKeyDown(GLFW_KEY_S)) camera.processKeyboard(Camera::Move::Backward, dt);
+        if (inputSystem_->isKeyDown(GLFW_KEY_A)) camera.processKeyboard(Camera::Move::Left, dt);
+        if (inputSystem_->isKeyDown(GLFW_KEY_D)) camera.processKeyboard(Camera::Move::Right, dt);
+        if (inputSystem_->isKeyDown(GLFW_KEY_SPACE)) camera.processKeyboard(Camera::Move::Up, dt);
+        if (inputSystem_->isKeyDown(GLFW_KEY_LEFT_SHIFT)) camera.processKeyboard(Camera::Move::Down, dt);
+
+        glm::vec2 md = inputSystem_->getMouseDelta();
+        if (md.x != 0.0f || md.y != 0.0f) camera.processMouseMovement(md.x, md.y);
+
+        // scroll
+        float sd = inputSystem_->getScrollDelta();
+        if (sd != 0.0f) camera.processMouseScroll(sd);
+
+        if (inputSystem_->shouldStop() && window_) glfwSetWindowShouldClose(window_->getHandle(), GLFW_TRUE);
+    }
+
+
     _animAngle += _rotationSpeed * dt;
     if (_animAngle > glm::two_pi<float>()) _animAngle -= glm::two_pi<float>();
 
@@ -118,6 +157,8 @@ void RenderCore::update(float dt) {
         std::cout << "[RenderCore] rotateModel = " << (_rotateModel ? "model" : "camera") << std::endl;
     }
     tPrev = tNow;
+    
+    
 }
 
 void RenderCore::render() {
@@ -131,7 +172,7 @@ void RenderCore::render() {
     float aspect = static_cast<float>(w) / static_cast<float>(h);
 
     // projection: perspective
-    glm::mat4 proj = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 1000.0f);
+    glm::mat4 proj = camera.getProjectionMatrix();
 
     // center of chunk in world coords
     glm::vec3 chunkCenter = glm::vec3(CHUNK_X * 0.5f, CHUNK_Y * 0.5f, CHUNK_Z * 0.5f);
@@ -143,11 +184,10 @@ void RenderCore::render() {
     glm::mat4 rot = glm::rotate(glm::mat4(1.0f), _animAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 
     // camera and model behavior
-    glm::vec3 camPos;
+    glm::vec3 camPos= camera.getPosition(); 
     if (_rotateModel) {
         // rotate the model around Y
         model = rot * model;
-        camPos = glm::vec3(0.0f, CHUNK_Y * 0.5f + 8.0f, CHUNK_Z * 2.0f);
     } else {
         // orbit the camera around the chunk center
         float radius = std::max<float>(CHUNK_X, CHUNK_Z) * 2.5f + 10.0f;
@@ -157,7 +197,7 @@ void RenderCore::render() {
     }
 
     // look at the center of the chunk
-    glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 view = camera.getViewMatrix();
 
     // final MVP
     glm::mat4 mvp = proj * view * model;

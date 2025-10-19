@@ -2,6 +2,8 @@
 
 #include "System.h"
 #include <GLFW/glfw3.h>
+#include <memory>
+#include <glm/glm.hpp>
 
 class InputSystem : public System {
 public:
@@ -14,7 +16,22 @@ public:
 
     bool shouldStop() const override;
 
+
+    bool isKeyDown(int glfwKey) const;
+    glm::vec2 getMouseDelta();    
+    float getScrollDelta();     
+
 private:
     GLFWwindow* window_;
     bool stopRequested_;
+
+    // mouse tracking
+    double lastX_;
+    double lastY_;
+    bool firstMouse_;
+    double mouseDeltaX_;
+    double mouseDeltaY_;
+
+    // scroll
+    double scrollDeltaY_;
 };

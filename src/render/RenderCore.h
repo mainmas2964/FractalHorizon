@@ -8,7 +8,7 @@
 #include "world/chunk/chunk.h"
 #include <glm/glm.hpp>
 #include <memory>
-
+#include "Camera.h"
 class RenderCore : public System {
 public:
     RenderCore();
@@ -18,6 +18,7 @@ public:
     void fixedUpdate(float) override {}
     void update(float dt) override;
     void render() override;
+    Camera camera;
 
     bool shouldClose() const;
 
