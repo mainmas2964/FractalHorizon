@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Трассировка луча в воксельном мире — Документация</title>
+  <meta name="description" content="Стратегия трассировки лучей в воксельном мире: статический BVH по чанкам + 3D‑DDA внутри чанка.">
+
+  <!-- Шрифты -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- MathJax конфигурация: поддержка display-формул -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['$$','$$'], ['\\[','\\]']]
+      },
+      svg: { fontCache: 'global' },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel: #0f1724;
+      --muted: #9fb3c8;
+      --text: #e6f3fb;
+      --card-bg: rgba(255,255,255,0.02);
+      --border: rgba(255,255,255,0.04);
+      --accent: #60a5fa;
+      --radius: 12px;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      color-scheme: dark;
+    }
+
+    /* базовые сбросы */
+    html, body { height:100%; margin:0; }
+    body{
+      font-family: "Segoe UI", Inter, system-ui, -apple-system, Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex; flex-direction:column;
+      min-height:100vh;
+    }
+
+    /* контейнер приложения */
+    .app {
+      width: min(1200px, 96%);
+      margin: 28px auto;
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    /* header */
+    header.app-header{
+      grid-column: 1 / -1;
+      display:flex; align-items:center; gap:16px;
+      padding:18px; border-radius:var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .logo {
+      width:56px; height:56px; border-radius:10px;
+      background: var(--accent);
+      display:flex; align-items:center; justify-content:center; font-weight:800; color:#04263b;
+      font-size:18px;
+      box-shadow: none;
+    }
+    header h1{ margin:0; font-size:18px; letter-spacing: -0.2px; color:var(--text) }
+    header p{ margin:0; color:var(--muted); font-size:13px }
+
+    /* боковая панель */
+    nav.sidebar{
+      background: var(--panel);
+      border-radius:12px; padding:16px;
+      border:1px solid var(--border);
+      box-shadow: none;
+      height: calc(100vh - 120px);
+      overflow:auto;
+      position:sticky; top:20px;
+    }
+    nav h3{ margin:0 0 12px 0; color:var(--muted); font-size:13px; }
+    nav a{
+      display:block;
+      padding:10px 12px;
+      border-radius:8px;
+      color:var(--text);
+      text-decoration:none;
+      margin-bottom:8px;
+      font-size:14px;
+      background: transparent;
+      transition: none;
+    }
+    nav a:focus, nav a:active {
+      outline: 2px solid rgba(96,165,250,0.12);
+      outline-offset: 2px;
+    }
+
+    /* основной контент */
+    article.content{
+      background: var(--panel);
+      border-radius:14px; padding:24px;
+      border:1px solid var(--border);
+      box-shadow: none;
+      max-height: calc(100vh - 120px);
+      overflow:auto;
+    }
+    article h2{ margin:0 0 10px 0; font-size:20px; color:var(--text); }
+    .section-sub{ color:var(--muted); margin:8px 0; font-weight:600; }
+
+    p{ color:#d7e9f7; margin:0 0 12px 0; line-height:1.5; }
+    ul{ margin:0 0 12px 20px; color:#d7e9f7; }
+    li{ margin:6px 0; }
+
+    /* MathJax / display formulas styling */
+    .math-display, .mjx-display {
+      text-align: center;
+      margin: 18px 0;
+      font-size: 1.18rem;    /* увеличенный размер для читаемости */
+      line-height: 1.3;
+    }
+    .mjx-svg, .MathJax_SVG_Display { vertical-align: middle; }
+    .mjx-chtml { font-size: 1.18rem !important; line-height: 1.3 !important; }
+
+    .math-inline {
+      font-size: 1.02rem; /* slightly larger inline math if any */
+    }
+
+    pre{
+      background: rgba(0,0,0,0.35);
+      padding:14px; border-radius:10px;
+      color:#cfe9fb; overflow:auto;
+      font-family:var(--mono); font-size:13px;
+      border:1px solid rgba(255,255,255,0.02);
+      box-shadow: none;
+    }
+
+    footer.app-footer{
+      grid-column: 1 / -1;
+      margin-top:12px; padding:12px 18px; border-radius:12px;
+      display:flex; justify-content:space-between; align-items:center;
+      background: var(--panel);
+      border:1px solid rgba(255,255,255,0.02);
+      color:var(--muted);
+      font-size:13px;
+      box-shadow: none;
+    }
+
+    /* Кнопки */
+    .btn {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:10px; border:1px solid var(--border); cursor:pointer;
+      background: transparent;
+      color:var(--text); font-weight:600;
+      transition: none;
+      box-shadow: none;
+    }
+    .btn.primary {
+      background: var(--accent);
+      color:#04263b;
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+
+    /* Оверлей */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      pointer-events: auto;
+      background: rgba(2,6,23,0.6);
+    }
+    .overlay.show { display:flex; }
+    .overlay-card {
+      position:relative;
+      z-index:2;
+      width: min(920px, 94%);
+      max-height: 86vh;
+      overflow:auto;
+      border-radius:12px;
+      padding:20px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.03);
+      box-shadow: none;
+    }
+
+    /* адаптив */
+    @media (max-width:980px){
+      .app { grid-template-columns: 1fr; width: 96%; }
+      nav.sidebar { position:relative; height:auto; order:2; }
+      article.content { order:1; max-height:none; }
+    }
+
+    @supports not (height: 100dvh) {
+      .overlay { height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Документация по трассировке лучей">
+    <header class="app-header" role="banner">
+      <div class="logo" aria-hidden="true">VXL</div>
+      <div style="flex:1">
+        <h1>Трассировка луча в воксельном мире</h1>
+        <p>Статический BVH по чанкам + 3D‑DDA внутри чанка — современный подход</p>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center">
+        <button class="btn" id="openOverlayBtn" aria-haspopup="dialog">Оверлей</button>
+        <button class="btn primary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Наверх</button>
+      </div>
+    </header>
+
+    <nav class="sidebar" aria-label="Навигация">
+      <h3>Содержание</h3>
+      <a href="#intro">Введение</a>
+      <a href="#algorithm">Алгоритм</a>
+      <a href="#formulas">Ключевые формулы</a>
+      <a href="#dda-params">Параметры 3D‑DDA</a>
+      <a href="#optimizations">Оптимизации</a>
+      <a href="#code">Фрагменты кода</a>
+      <a href="#conclusion">Заключение</a>
+    </nav>
+
+    <article class="content" role="main">
+      <section id="intro">
+        <h2>Введение</h2>
+        <div class="section-sub">Идея</div>
+        <p>Мир делится на чанки (например, <strong>16×16×256</strong>). Строим статический BVH по AABB чанков. Для трассировки луча сначала фильтруем чанки через BVH, затем внутри каждого попавшего чанка выполняем 3D‑DDA (voxel traversal). Динамические объекты держим в отдельном TLAS и обрабатываем отдельно.</p>
+
+        <div class="section-sub">Преимущества</div>
+        <ul>
+          <li>Минимальные глобальные проверки.</li>
+          <li>Простая и быстрая локальная проверка внутри чанка.</li>
+          <li>Масштабируемость на миллионы блоков.</li>
+        </ul>
+      </section>
+
+      <section id="algorithm">
+        <h2>Алгоритм</h2>
+        <div class="section-sub">Шаг 1 — Поиск кандидатов в BVH по чанкам</div>
+        <p>Обходить BVH итеративно, проверяя пересечение луча с AABB узлов. Для каждого листа (чанка) получить интервал параметров луча внутри AABB и добавить чанку в список кандидатов. Обрабатывать кандидатов в порядке возрастания <code>t_enter</code>.</p>
+
+        <div class="section-sub">Шаг 2 — Инициализация 3D‑DDA внутри чанка</div>
+        <p>Перевести точку входа луча в локальные координаты чанка. Определить начальный воксель <code>i</code>. Вычислить направление шага по каждой оси <code>step_k</code>. Рассчитать <code>tDelta_k</code> и <code>tMax_k</code>. Обработать случаи нулевой компоненты направления, задав бесконечные шаги по соответствующей оси.</p>
+
+        <div class="section-sub">Шаг 3 — Цикл DDA по вокселям</div>
+        <p>Пока текущий воксель внутри границ чанка и текущее <code>t</code> не превысило <code>t_exit</code>:</p>
+        <ul>
+          <li>Если воксель твёрдый — вернуть попадание и остановиться.</li>
+          <li>Иначе выбрать ось с минимальным <code>tMax</code>, шагнуть по ней, обновить <code>t</code> и <code>tMax</code>.</li>
+        </ul>
+
+        <div class="section-sub">Шаг 4 — Переходы между чанками</div>
+        <p>При выходе из AABB чанка продолжить с следующего чанка по отсортированному списку кандидатов. Пропускать полностью пустые чанки с помощью флага <code>empty</code> без запуска DDA.</p>
+      </section>
+
+      <section id="formulas">
+        <h2>Ключевые формулы</h2>
+        <div class="section-sub">Пересечение луча с AABB</div>
+
+        <div class="math-display">
+\[
+\mathbf{r}(t)=\mathbf{o}+t\mathbf{d}
+\]
+        </div>
+
+        <div class="math-display">
+\[
+t_{k}^{\min} = \dfrac{b_{\min,k} - o_k}{d_k},\quad t_{k}^{\max} = \dfrac{b_{\max,k} - o_k}{d_k}
+\]
+        </div>
+
+        <div class="math-display">
+\[
+t_{\text{enter}} = \max_k \min(t_k^{\min},t_k^{\max}),\quad t_{\text{exit}} = \min_k \max(t_k^{\min},t_k^{\max})
+\]
+        </div>
+
+        <p>Если \(t_{\text{enter}} \le t_{\text{exit}}\), луч пересекает AABB в интервале \([t_{\text{enter}}, t_{\text{exit}}]\).</p>
+      </section>
+
+      <section id="dda-params">
+        <h2>Параметры 3D‑DDA</h2>
+        <div class="section-sub">Определения</div>
+
+        <div class="math-display">
+\[
+\text{step}_k = \operatorname{sign}(d_k)
+\]
+        </div>
+
+        <div class="math-display">
+\[
+tDelta_k = \dfrac{1}{|d_k|},\quad tMax_k = \dfrac{(i_k + \mathbb{1}_{d_k>0}) - p_k}{d_k}
+\]
+        </div>
+
+        <p>В цикле выбираем ось с минимальным \(tMax_k\) и выполняем шаг по ней, обновляя \(i_k\), \(t\) и \(tMax_k\). При \(d_k = 0\) задавайте \(tDelta_k = +\infty\) и \(tMax_k = +\infty\).</p>
+      </section>
+
+      <section id="optimizations">
+        <h2>Практические рекомендации и оптимизации</h2>
+        <ul>
+          <li>Чанки как листья BVH — хранить AABB на уровне чанков.</li>
+          <li>Empty mask и уровни пустоты — бит‑маски для быстрого пропуска пустых областей.</li>
+          <li>Fat AABB — небольшой запас для устойчивости к численным ошибкам.</li>
+          <li>Пакетная трассировка лучей — группировка лучей по направлению/области.</li>
+        </ul>
+      </section>
+
+      <section id="code">
+        <h2>Минимальные фрагменты кода</h2>
+        <pre><code>// p = o + d * t_enter
+p = o + d * t_enter;
+i = floor(p); // начальный воксель (в локальных координатах чанка)
+step = sign(d);
+tDelta = { invAbs(d.x), invAbs(d.y), invAbs(d.z) };
+
+// tMax: расстояние по параметру t до первой границы вокселя по каждой оси
+tMax.x = ( (i.x + (d.x > 0 ? 1 : 0)) - p.x ) / d.x; // handle d.x == 0 -> +inf
+tMax.y = ( (i.y + (d.y > 0 ? 1 : 0)) - p.y ) / d.y;
+tMax.z = ( (i.z + (d.z > 0 ? 1 : 0)) - p.z ) / d.z;
+
+// если d.k == 0: tDelta.k = +inf, tMax.k = +inf
+
+t = t_enter;
+while (insideChunk(i) && t <= t_exit) {
+    if (isSolid(i)) {
+        return hit;
+    }
+    if (tMax.x < tMax.y && tMax.x < tMax.z) {
+        i.x += step.x; t = tMax.x; tMax.x += tDelta.x;
+    } else if (tMax.y < tMax.z) {
+        i.y += step.y; t = tMax.y; tMax.y += tDelta.y;
+    } else {
+        i.z += step.z; t = tMax.z; tMax.z += tDelta.z;
+    }
+}
+</code></pre>
+      </section>
+
+      <section id="conclusion">
+        <h2>Заключение</h2>
+        <p>Комбинация статического BVH по чанкам и 3D‑DDA внутри чанка даёт оптимальный баланс для воксельных миров: глобальная фильтрация остаётся дешёвой, а локальная проверка — максимально простой и быстрой.</p>
+      </section>
+
+      <footer class="app-footer">
+        <div>Документация — алгоритм, формулы и минимальные фрагменты кода.</div>
+        <div style="color:var(--muted)">Версия 1.2 · Дизайн: упрощённый Fluent</div>
+      </footer>
+    </article>
+  </div>
+
+  <!-- Оверлей -->
+  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="overlay-card" role="document" aria-labelledby="overlayTitle">
+      <h2 id="overlayTitle" style="margin-top:0">Оверлей — полноэкранный ровный слой</h2>
+      <p>Этот слой занимает весь экран и выполнен в упрощённом стиле: без градиентов, без тени, без смещений.</p>
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button class="btn primary" id="overlayClose">Закрыть</button>
+        <button class="btn" id="overlayHide">Скрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Overlay controls (без анимаций)
+    (function(){
+      const overlay = document.getElementById('overlay');
+      const openBtn = document.getElementById('openOverlayBtn');
+      const closeBtn = document.getElementById('overlayClose');
+      const hideBtn = document.getElementById('overlayHide');
+
+      function show() {
+        overlay.classList.add('show');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function hide() {
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      if (openBtn) openBtn.addEventListener('click', show);
+      if (closeBtn) closeBtn.addEventListener('click', hide);
+      if (hideBtn) hideBtn.addEventListener('click', hide);
+
+      // close on backdrop click
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) hide();
+      });
+
+      // expose for quick testing
+      window.showOverlay = show;
+      window.hideOverlay = hide;
+    })();
+  </script>
+</body>
+</html>
