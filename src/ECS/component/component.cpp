@@ -1,5 +1,5 @@
 /*
-created by mainmas2964  2025, 5 octomber
+created by mainmas2964  2025, 5 october
 */
 #include "component.h"
 #include <stdexcept>
