@@ -40,6 +40,10 @@ public:
             callback(static_cast<const EventType&>(e));
         });
     };
+    template<typename EventType>
+    void emitEvent(const EventType& e){
+        eventBus->emit(e);
+    }; //ONLY make it sync with the one thread, no multithreading 
 
     Clock& getEngineClock();
 

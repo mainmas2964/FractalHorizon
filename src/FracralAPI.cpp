@@ -34,8 +34,9 @@ void FractalAPI::initEntityManager(){
     if(!eventBusInitialized){
         eventBus = std::make_unique<EventBus>();
         eventBusInitialized = true;
+        std::cout << "Event bus imitialized" << std::endl;
     } else {
-        std::cout << "Event Bus initialized" << std::endl;
+        std::cout << "Event Bus already initialized" << std::endl;
     }
 }
 TaskSystem& FractalAPI::getTaskSystem(){

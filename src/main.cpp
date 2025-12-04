@@ -51,7 +51,12 @@ int main() {
             std::cout << ev.number << std::endl;
         };
     });
+    MsgEvent e {
+        e.id = 100000,
+        e.number = 9879878
+    };
     api.pushEvent<MsgEvent>(10000, 20033);
+    api.emitEvent(e);
     api.processEvents();
     std::thread apiThread([&api]() { api.run(); });
     std::this_thread::sleep_for(std::chrono::seconds(5)); 
