@@ -4,9 +4,15 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "FractalAPI.h"
-    struct hp {
-        int health;
-    };
+struct hp {
+    int health;
+};
+struct MsgEvent : public Event {
+    int id;
+    int number;
+    MsgEvent(int id, int number): id(id), number(number){}
+};
+
 int main() {
     FractalAPI& api = FractalAPI::instance();
     api.initialize();
@@ -36,11 +42,20 @@ int main() {
     component.health += 10;
     std::cout << "Entity " << e.id << " health: " << component.health << std::endl;
     });
-
-
-    
+    Task task2 {
+        .func = [](){ std::cout << "this task" << std::endl; }
+    };
+    api.enququeTaskAsync(task2);
+    api.subscribe<MsgEvent>([](const MsgEvent& ev){
+        if(ev.id!=100){
+            std::cout << ev.number << std::endl;
+        };
+    });
+    api.pushEvent<MsgEvent>(10000, 20033);
+    api.processEvents();
     std::thread apiThread([&api]() { api.run(); });
-    std::this_thread::sleep_for(std::chrono::seconds(10)); 
+    std::this_thread::sleep_for(std::chrono::seconds(5)); 
+
     api.stop();
     apiThread.join();
     api.shutdown();

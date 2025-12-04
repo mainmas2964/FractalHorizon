@@ -6,6 +6,7 @@ void FractalAPI::initialize(){
         initTaskSystem();
         initEntityManager();
         initEngineClock();
+        initEventBus();
         initialized = true;
         std::cout << "FractalAPI initialized" << std::endl;
     } else {
@@ -21,10 +22,20 @@ void FractalAPI::initTaskSystem(){
         std::cout << "Task System already initialized" << std::endl;
     }
 }
+void FractalAPI::processEvents(){
+    eventBus->processEvents();
+}
 void FractalAPI::initEntityManager(){
     if(!entityManagerInitialized){
         entityManagerInitialized = true;
         entityManager = std::make_unique<EntityManager>();
+    }
+}void FractalAPI::initEventBus() {
+    if(!eventBusInitialized){
+        eventBus = std::make_unique<EventBus>();
+        eventBusInitialized = true;
+    } else {
+        std::cout << "Event Bus initialized" << std::endl;
     }
 }
 TaskSystem& FractalAPI::getTaskSystem(){
@@ -60,6 +71,10 @@ void FractalAPI::shutdown(){
         if(entityManagerInitialized){
             entityManager.reset();
             std::cout << "Entity Manager shut down" << std::endl;
+        }
+        if(eventBusInitialized){
+            eventBus.reset();
+            std::cout << "Event Bus shut down" << std::endl;
         }
         engineClockInitialized = false;
         entityManagerInitialized = false;

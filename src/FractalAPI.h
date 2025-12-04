@@ -10,7 +10,7 @@
 #include "taskSystem/taskSystem.h"
 #include "Clock.h"
 #include "ECS/system/system.h"
-
+#include "eventManager.h"
 class FractalAPI {
 public:
     static FractalAPI& instance() {
@@ -21,6 +21,7 @@ public:
     void initEntityManager();
     void initialize();
     void initEngineClock();
+    void initEventBus();
     void shutdown();
     void initTaskSystem();
     TaskSystem& getTaskSystem();
@@ -28,6 +29,17 @@ public:
     void registerIntervalTask(const TickTask& tickTask);
     void updateIntervalTasks();
     void stop();
+    template<typename EventType, typename... Args>
+    void pushEvent(Args&&... args){
+        eventBus->pushEvent<EventType>(std::forward<Args>(args)...);
+    };
+    void processEvents();
+    template<typename EventType>
+    void subscribe(std::function<void(const EventType&)> callback){
+        eventBus->subscribe<EventType>([callback](const Event& e){
+            callback(static_cast<const EventType&>(e));
+        });
+    };
 
     Clock& getEngineClock();
 
@@ -97,9 +109,11 @@ private:
     std::unique_ptr<TaskSystem> taskSystem = nullptr;
     std::unique_ptr<Clock> engineClock = nullptr;
     std::unique_ptr<EntityManager> entityManager = nullptr;
+    std::unique_ptr<EventBus> eventBus = nullptr;
     bool taskSystemInitialized = false;
     bool entityManagerInitialized = false;
     bool engineClockInitialized = false;
+    bool eventBusInitialized = false;
     bool running = false;
 
     FractalAPI() = default;
