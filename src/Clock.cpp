@@ -5,17 +5,19 @@ Clock::Clock() {
 }
 
 void Clock::update() {
-    last_time = std::chrono::high_resolution_clock::now();
+    auto now = std::chrono::high_resolution_clock::now();
+    deltaTime = std::chrono::duration<float>(now - last_time).count();
+    last_time = now;
+    totalTime = std::chrono::duration<float>(now - start_time).count();
+
 }
-void Clock::reset() {
+void Clock::resetClock() {
     start_time = std::chrono::high_resolution_clock::now();
     last_time = start_time;
 }
 
 float Clock::getDeltaTime() const {
-    auto now = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<float> delta = now - last_time;
-    return delta.count();
+    return deltaTime;
 }
 float Clock::getTotalTime() const {
     auto now = std::chrono::high_resolution_clock::now();

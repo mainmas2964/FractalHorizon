@@ -1,6 +1,7 @@
 /*
 created by mainmas2964  2025, 5 october
 */
+/*
 #include "component.h"
 #include <stdexcept>
 #include <cstdint>
@@ -51,3 +52,4 @@ template class Component<float>;
 template class Component<double>;
 template class Component<std::string>;
 // add more types as needed
+*/
