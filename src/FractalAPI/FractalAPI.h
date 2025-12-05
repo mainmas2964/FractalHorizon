@@ -11,12 +11,14 @@
 #include "Clock.h"
 #include "ECS/system/system.h"
 #include "eventManager.h"
+//TODO: сделать namespac'ы для АПИ
 class FractalAPI {
 public:
     static FractalAPI& instance() {
-        static FractalAPI instance;
-        return instance;
+        static FractalAPI inst;
+        return inst;
     }
+
     void run();
     void initEntityManager();
     void initialize();
@@ -104,7 +106,7 @@ public:
         comp->addComponent(e, componentData);
     }
 
-    Entity addECSentity();
+    Entity createEntity();
     void getECSentity(uint32_t id = 0);
 
 private:
@@ -125,5 +127,6 @@ private:
 
     std::unordered_map<std::type_index, std::any> systems;
     std::unordered_map<std::type_index, std::any> components;
+
 };
 

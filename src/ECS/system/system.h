@@ -1,7 +1,5 @@
 /*
 created by mainmas2964  2025, 4 october
-
-
 */
 #pragma once
 #include "ECS/component/component.h"

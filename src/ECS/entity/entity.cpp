@@ -1,4 +1,5 @@
 #include "entity.h"
+#
 Entity EntityManager::createEntity() {
     Entity e{ nextEntityId++ };
     return e;

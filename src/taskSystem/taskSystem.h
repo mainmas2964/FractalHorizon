@@ -9,19 +9,7 @@
 #include <chrono>
 #include "Clock.h"
 #pragma once
-struct Task{
-    std::function<void()> func;
-};
-struct TickTask{
-    std::function<void()> func;
-    std::chrono::milliseconds intervalMs;
-    std::chrono::steady_clock::time_point lastExecutedMs;
-    size_t id;
-    size_t executionsRemaining;
-    bool active;
-    float timeAccumulator = 0.0f;
-
-};
+#include "Structs&Classes.h"
 class TaskSystem {
 public:
     TaskSystem(size_t numThreads = std::thread::hardware_concurrency());

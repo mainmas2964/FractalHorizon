@@ -4,10 +4,7 @@
 #include <typeindex>
 #include <any>
 #include <memory>
-class Event {
-    public:
-    virtual ~Event() = default;
-};
+
 class EventBus {
     public:
     template<typename EventType>

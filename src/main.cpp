@@ -1,9 +1,12 @@
 #include <iostream>
 #include "Engine.h"
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
-#include "FractalAPI.h"
+#include "FractalAPI/HorizonAPI.h"
+#include "Structs&Classes.h"
+#include <thread>
+#include <chrono>
+
 struct hp {
     int health;
 };
@@ -14,7 +17,8 @@ struct MsgEvent : public Event {
 };
 
 int main() {
-    FractalAPI& api = FractalAPI::instance();
+  /*  
+    HorizonAPI& api = HorizonAPI::instance();
     api.initialize();
     TickTask task1 {
         .func = []() { std::cout << "Task 1 executed\n"; },
@@ -32,11 +36,13 @@ int main() {
     hp hp2{
         .health = 80
     };
-    api.addECScomponent<hp>(100);
-    Entity e1 = api.addECSentity();
-    Entity e2 = api.addECSentity();
-    api.attachECSCompToEntity<hp>(e1, hp1);
-    api.attachECSCompToEntity<hp>(e2, hp2);
+    api.addComponent<hp>(100);
+    
+    Entity e1 = api.createEntity();
+    Entity e2 = api.createEntity();
+    api.attachComponent<hp>(e1, hp1);
+    api.attachComponent<hp>(e2, hp2);
+    
     SystemECS<hp>& hpSystem = api.system<hp>();
     api.updateSystem<hp>([](hp& component, Entity e) {
     component.health += 10;
@@ -63,6 +69,6 @@ int main() {
 
     api.stop();
     apiThread.join();
-    api.shutdown();
+    api.shutdown();*/
 
 }

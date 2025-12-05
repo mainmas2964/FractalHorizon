@@ -12,7 +12,7 @@ void FractalAPI::initialize(){
     } else {
         std::cout << "FractalAPI already initialized" << std::endl;
     }
-}
+};
 void FractalAPI::initTaskSystem(){
     if(!taskSystemInitialized){
         taskSystem = std::make_unique<TaskSystem>();
@@ -30,7 +30,8 @@ void FractalAPI::initEntityManager(){
         entityManagerInitialized = true;
         entityManager = std::make_unique<EntityManager>();
     }
-}void FractalAPI::initEventBus() {
+}
+void FractalAPI::initEventBus() {
     if(!eventBusInitialized){
         eventBus = std::make_unique<EventBus>();
         eventBusInitialized = true;
@@ -51,7 +52,7 @@ void FractalAPI::initEngineClock(){
         std::cout << "Engine Clock already initialized" << std::endl;
     }
 }
-Entity FractalAPI::addECSentity(){
+Entity FractalAPI::createEntity(){
     return entityManager->createEntity();
 
 }
